@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from challenges.day_11_dumbo_octopus import total_flashes_after_steps
+from challenges.day_11_dumbo_octopus import total_flashes_after_steps, first_step_when_all_flash_together
 
 
 class Test(TestCase):
@@ -41,3 +41,22 @@ class Test(TestCase):
         with open('inputs/day_11.txt') as f:
             octopuses = f.read().splitlines()
             self.assertEqual(1757, total_flashes_after_steps(octopuses, 100))
+
+    def test_first_step_when_all_flash_together(self):
+        self.assertEqual(195, first_step_when_all_flash_together([
+            "5483143223",
+            "2745854711",
+            "5264556173",
+            "6141336146",
+            "6357385478",
+            "4167524645",
+            "2176841721",
+            "6882881134",
+            "4846848554",
+            "5283751526"
+        ]))
+
+    def test_first_step_when_all_flash_together_real_input(self):
+        with open('inputs/day_11.txt') as f:
+            octopuses = f.read().splitlines()
+            self.assertEqual(422, first_step_when_all_flash_together(octopuses))

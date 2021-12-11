@@ -27,3 +27,21 @@ def increase_and_possibly_flash(octopus_location, current_octopuses, has_already
             for y_neighbour in range(max(0, y - 1), min(max_y, y + 1) + 1):
                 if not (x == x_neighbour and y == y_neighbour):
                     increase_and_possibly_flash((x_neighbour, y_neighbour), current_octopuses, has_already_flashed)
+
+
+def first_step_when_all_flash_together(octopuses: List[str]):
+    current_octopuses = [[int(octopus) for octopus in row] for row in octopuses]
+    total_number_of_flashes = 0
+    number_of_octopuses = len(current_octopuses) * len(octopuses[0])
+    step = 0
+    while True:
+        step += 1
+        has_already_flashed = dict()
+        for y, row in enumerate(current_octopuses):
+            for x, octopus in enumerate(row):
+                increase_and_possibly_flash((x, y), current_octopuses, has_already_flashed)
+        for octopus in has_already_flashed:
+            current_octopuses[octopus[1]][octopus[0]] = 0
+        total_number_of_flashes += len(has_already_flashed)
+        if len(has_already_flashed) == number_of_octopuses:
+            return step
