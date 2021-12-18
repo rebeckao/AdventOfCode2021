@@ -26,6 +26,34 @@ def visited_caves(visited: List[str], all_caves: Dict) -> List[List[str]]:
         return ending_paths
 
 
+def number_of_possible_paths_with_revisit(connections: List[str]) -> int:
+    caves = to_cave_map(connections)
+    all_paths = visited_caves_with_revisit_allowed(["start"], caves, False)
+    paths_to_end = [path for path in all_paths if path[-1] == "end"]
+    return len(paths_to_end)
+
+
+def visited_caves_with_revisit_allowed(visited: List[str], all_caves: Dict, used_revisit: bool) -> List[List[str]]:
+    current_cave = visited[-1]
+    if current_cave == "end":
+        return [visited]
+    else:
+        available_caves = all_caves[current_cave].connected_caves
+        possible_paths = [visited]
+        for cave in available_caves:
+            has_used_revisit = used_revisit
+            if cave in visited and not all_caves[cave].large:
+                if not used_revisit and cave != "start" and cave != "end":
+                    has_used_revisit = True
+                else:
+                    continue
+            new_visited = visited + [cave]
+            new_paths = visited_caves_with_revisit_allowed(new_visited, all_caves, has_used_revisit)
+            possible_paths += new_paths
+        ending_paths = [path for path in possible_paths if path[-1] == "end"]
+        return ending_paths
+
+
 def to_cave_map(mapping):
     caves = dict()
     for line in mapping:
