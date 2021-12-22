@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from challenges.day_16_packet_decoder import hexadecimal_to_binary, to_decimal, sum_of_version_numbers
+from challenges.day_16_packet_decoder import hexadecimal_to_binary, to_decimal, sum_of_version_numbers, value_of_expression
 
 
 class Test(TestCase):
@@ -24,3 +24,18 @@ class Test(TestCase):
         with open('inputs/day_16.txt') as f:
             hexadecimal = f.read().splitlines()[0]
             self.assertEqual(883, sum_of_version_numbers(hexadecimal))
+
+    def test_value_of_expression(self):
+        self.assertEqual(3, value_of_expression("C200B40A82"))
+        self.assertEqual(54, value_of_expression("04005AC33890"))
+        self.assertEqual(7, value_of_expression("880086C3E88112"))
+        self.assertEqual(9, value_of_expression("CE00C43D881120"))
+        self.assertEqual(1, value_of_expression("D8005AC2A8F0"))
+        self.assertEqual(0, value_of_expression("F600BC2D8F"))
+        self.assertEqual(0, value_of_expression("9C005AC2F8F0"))
+        self.assertEqual(1, value_of_expression("9C0141080250320F1802104A08"))
+
+    def test_value_of_expression_real_input(self):
+        with open('inputs/day_16.txt') as f:
+            hexadecimal = f.read().splitlines()[0]
+            self.assertEqual(1675198555015, value_of_expression(hexadecimal))
