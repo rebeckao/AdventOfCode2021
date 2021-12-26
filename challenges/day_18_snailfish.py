@@ -88,6 +88,19 @@ def add_together_list(raw_numbers: List[str]) -> str:
     return result
 
 
+def largest_magnitude(numbers: List[str]) -> int:
+    largest_magn = 0
+    for first_idx in range(0, len(numbers)):
+        for second_idx in range(0, len(numbers)):
+            if first_idx == second_idx:
+                continue
+            result = add_together_list([numbers[first_idx], numbers[second_idx]])
+            magn = magnitude(parse_snailfish_expression(result))
+            if magn > largest_magn:
+                largest_magn = magn
+    return largest_magn
+
+
 @dataclass
 class SnailfishNumber:
     plain_value: Union[int, None] = None
