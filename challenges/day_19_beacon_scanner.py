@@ -1,6 +1,6 @@
 import re
 from dataclasses import dataclass
-from typing import List, Dict, Set
+from typing import List, Dict, Set, Tuple
 
 
 @dataclass(frozen=True)
@@ -16,11 +16,12 @@ class Beacon:
     distances_to_others: list[set[Coordinate]]
 
 
-def number_of_beacons(raw_scanners: List[str]) -> int:
+def number_of_beacons(raw_scanners: List[str]) -> Tuple[int, int]:
     scanners: dict[int, set[Coordinate]] = parse_scanners(raw_scanners)
     starting_scanner_id = list(scanners.keys())[0]
     identified_beacons = set(scanners[starting_scanner_id])
     already_read_scanners = {starting_scanner_id}
+    scanner_locations = {Coordinate(0, 0, 0)}
     while True:
         if len(already_read_scanners) == len(scanners):
             break
@@ -32,6 +33,7 @@ def number_of_beacons(raw_scanners: List[str]) -> int:
             correct_orientation_index, offset = correct_orientation_if_any_overlap(identified_beacons, new_beacons)
             if correct_orientation_index is None:
                 continue
+            scanner_locations.add(offset)
             already_read_scanners.add(scanner_id)
             for beacon in new_beacons:
                 correct_orientation = possible_rotations(beacon)[correct_orientation_index]
@@ -42,9 +44,14 @@ def number_of_beacons(raw_scanners: List[str]) -> int:
             if len(already_read_scanners) != len(scanners):
                 print(f"identified scanners: {already_read_scanners}")
             break
-        print(f"identified beacons: {previous_number_of_identified_beacons} -> {new_number_of_identified_beacons}")
-    print(f"All identified beacons relative scanner 0:\n{identified_beacons}")
-    return len(identified_beacons)
+    greatest_manhattan_distance = 0
+    for scanner_location in scanner_locations:
+        distances = relative_distances_to_other_identified(scanner_location, scanner_locations)
+        for distance in distances:
+            current_manhattan_distance = abs(distance.x) + abs(distance.y) + abs(distance.z)
+            if current_manhattan_distance > greatest_manhattan_distance:
+                greatest_manhattan_distance = current_manhattan_distance
+    return len(identified_beacons), greatest_manhattan_distance
 
 
 def correct_orientation_if_any_overlap(identified_beacons, new_beacons):
@@ -71,7 +78,6 @@ def correct_orientation_if_any_overlap(identified_beacons, new_beacons):
                     y_offset = identified_beacon.y - rotated_beacon.y
                     z_offset = identified_beacon.z - rotated_beacon.z
                     offset = Coordinate(x_offset, y_offset, z_offset)
-                    print(f"found match for orientation {idx}: beacon {identified_beacon} == beacon {new_beacon} (rotated {rotated_beacon}), offset {offset}")
                     return idx, offset
     return None, None
 
