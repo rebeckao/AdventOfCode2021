@@ -10,12 +10,6 @@ class Coordinate:
     z: int
 
 
-@dataclass
-class Beacon:
-    seen_by_scanners: dict[int, Coordinate]
-    distances_to_others: list[set[Coordinate]]
-
-
 def number_of_beacons(raw_scanners: List[str]) -> Tuple[int, int]:
     scanners: dict[int, set[Coordinate]] = parse_scanners(raw_scanners)
     starting_scanner_id = list(scanners.keys())[0]
